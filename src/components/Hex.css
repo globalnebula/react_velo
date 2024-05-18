@@ -1,0 +1,120 @@
+.hex-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 100px);
+    grid-template-rows: repeat(3, 75px);
+    grid-gap: 22px;
+    padding: 20px;
+    width: 620px;
+    height: 320px;
+    margin: 0 auto;
+  }
+  
+  .hex {
+    position: relative;
+    margin: 0 20px;
+  }
+  
+  .hex-row-wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .hex-row {
+    display: flex;
+    position: relative;
+    animation-name: pulse00;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-delay: .2s;
+    -webkit-animation-name: pulse00;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-delay: .2s;
+  }
+  
+  .hex-row.r2 {
+    animation-delay: .4s;
+    -webkit-animation-delay: .4s;
+  }
+  
+  .hex-row.r3 {
+    animation-delay: .6s;
+    -webkit-animation-delay: .6s;
+  }
+  
+  .hex-brick {
+    width: 70px;
+    height: 37.5px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0e14a;
+    animation-name: fade00;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-delay: .2s;
+    -webkit-animation-name: fade00;
+    -webkit-animation-duration: 2s;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-delay: .2s;
+  }
+  
+  .hex-brick.b11 {
+    animation-delay: .4s;
+    -webkit-animation-delay: .4s;
+  }
+  
+  .hex-brick.b12 {
+    animation-delay: .6s;
+    -webkit-animation-delay: .6s;
+  }
+  
+  .hex-brick.b20 {
+    animation-delay: .6s;
+    -webkit-animation-delay: .6s;
+  }
+  
+  .hex-brick.b21 {
+    animation-delay: .8s;
+    -webkit-animation-delay: .8s;
+  }
+  
+  .hex-brick.b22 {
+    animation-delay: 1s;
+    -webkit-animation-delay: 1s;
+  }
+  
+  .inner-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #f0e14a;
+  }
+  
+  @keyframes pulse00 {
+    0% {
+      -webkit-transform: scale(1);
+      transform: scale(1);
+    }
+    50% {
+      -webkit-transform: scale(0.01);
+      transform: scale(0.01);
+    }
+    100% {
+      -webkit-transform: scale(1);
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes fade00 {
+    0% {
+      background: #f0e14a;
+    }
+    50% {
+      background: #ffd700;
+    }
+    100% {
+      background: #f5d057;
+    }
+  }
