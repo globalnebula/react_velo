@@ -42,14 +42,14 @@ function App() {
         <Routes>
           <Route path="/" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
-          {user && <Route path="/home" element={<Home />} />}
-          {user && <Route path="/bikes" element={<Bikes />} />}
-          {user && <Route path="/bikes/:param" element={<Details />} />}
+          { <Route path="/home" element={<Home />} />}
+          { <Route path="/bikes" element={<Bikes />} />}
+          { <Route path="/bikes/:param" element={<Details />} />}
           { <Route path="/reserve" element={<Reservations />} />}
           { <Route path="/delete_bike" element={<DeleteBike />} />}
           { <Route path="/reservations" element={<MyReservations />} />}
           { <Route path="/add_bike" element={<AddBike />} />}
-          {user && <Route path="*" element={<Navigate to='/home' />} />}
+          { <Route path="*" element={<Navigate to='/home' />} />}
         </Routes>
       </Router>
     </React.Fragment>
