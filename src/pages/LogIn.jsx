@@ -1,9 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useGetUsersQuery } from '../components/api/apiSlice';
-import UseChange from '../hooks/UseChange';
-
-import sessionStorage from '../helpers/sessions';
+import axios from 'axios';
 
 import Input from '../reusables/inputFields/Inputs';
 import Container from '../reusables/container/Container';
@@ -11,14 +8,13 @@ import Modal from '../reusables/notifications/modal/Modal';
 
 function LogIn() {
   const [modal, setModal] = useState({ isError: false, message: '', type: '' });
-  const [username, handleUsernameChange] = UseChange('');
-  const [email, handleEmailChange] = UseChange('');
-  const [password, handlePasswordChange] = UseChange('');
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
-  const { data: users } = useGetUsersQuery();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!username || !email || !password) {
@@ -29,29 +25,30 @@ function LogIn() {
       });
       return;
     } else {
-      const user =
-        users.find(
-          (user) =>
-            user.name === username &&
-            user.email === email &&
-            user.password === password
-        ) || null;
+      try {
+        const response = await axios.post('http://localhost:3000/api/auth/login', {
+          username,
+          email,
+          password,
+        });
 
-      if (!user) {
+        if (response.data.success) {
+          // Handle successful login
+          navigate('/home');
+        } else {
+          setModal({
+            isError: true,
+            message: response.data.message,
+            type: 'error',
+          });
+        }
+      } catch (error) {
+        console.error(error);
         setModal({
           isError: true,
-          message:
-            'User does not exist, confirm entered data or sign up a new account',
+          message: 'An error occurred. Please try again later.',
           type: 'error',
         });
-        return;
-      } else {
-          sessionStorage('set', user);
-        const userSec = sessionStorage('get');
-        if (userSec) {
-          navigate('/home');
-          window.location.reload();
-        }
       }
     }
   };
@@ -68,19 +65,19 @@ function LogIn() {
             label='Username'
             type='text'
             value={username}
-            onChange={(e) => handleUsernameChange(e)}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <Input
             label='Email'
             type='email'
             value={email}
-            onChange={(e) => handleEmailChange(e)}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <Input
             label='Password'
             type='password'
             value={password}
-            onChange={(e) => handlePasswordChange(e)}
+            onChange={(e) => setPassword(e.target.value)}
           />
 
           <button type='submit'>Log In</button>

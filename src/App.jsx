@@ -31,22 +31,25 @@ function App() {
     }
   });
 
+
+  
   return (
     <React.Fragment>
       <Router>
         {/*{isLoading && <Spiner />}*/}
         {user && <Sidebar />}
+        
         <Routes>
           <Route path="/" element={<LogIn />} />
           <Route path="/signup" element={<SignUp />} />
-          { <Route path="/home" element={<Home />} />}
-          { <Route path="/bikes" element={<Bikes />} />}
-          { <Route path="/bikes/:param" element={<Details />} />}
+          {user && <Route path="/home" element={<Home />} />}
+          {user && <Route path="/bikes" element={<Bikes />} />}
+          {user && <Route path="/bikes/:param" element={<Details />} />}
           { <Route path="/reserve" element={<Reservations />} />}
           { <Route path="/delete_bike" element={<DeleteBike />} />}
           { <Route path="/reservations" element={<MyReservations />} />}
           { <Route path="/add_bike" element={<AddBike />} />}
-          { <Route path="*" element={<Navigate to='/home' />} />}
+          {user && <Route path="*" element={<Navigate to='/home' />} />}
         </Routes>
       </Router>
     </React.Fragment>

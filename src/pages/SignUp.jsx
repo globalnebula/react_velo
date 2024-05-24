@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import UseChange from '../hooks/UseChange';
-import UseFileUpload from '../hooks/useFileUpload';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAddUserMutation } from '../components/api/apiSlice';
+import axios from 'axios';
 
 import Modal from '../reusables/notifications/modal/Modal';
-
 import Input from '../reusables/inputFields/Inputs';
 import FileUpload from '../reusables/inputFields/FileUpload';
 import Container from '../reusables/container/Container';
+
+import { createUser } from '../../server/api/api.js';
 
 function SignUp() {
   const [showModal, setShowModal] = useState({
@@ -16,19 +15,18 @@ function SignUp() {
     message: '',
     type: '',
   });
-  const [username, handleUsernameChange] = UseChange('');
-  const [email, handleEmailChange] = UseChange('');
-  const [password, handlePasswordChange] = UseChange('');
-  const [confirmPassword, handleConfirmPasswordChange] = UseChange('');
-  const { file, preview, handleFileChange } = UseFileUpload();
-
-  const [addUser] = useAddUserMutation();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!username || !email || !password || !confirmPassword) {
       setShowModal({
         alert: true,
@@ -65,19 +63,42 @@ function SignUp() {
       });
       return;
     } else {
-      const avatar = file ? preview : null;
-      const data = { username, email, password, avatar };
-      localStorage.setItem('user', JSON.stringify(data));
-
-      addUser({
-        name: username,
-        email,
-        password,
-      });
+      try {
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('avatar', file);
+  
+        // Log form data to check if it's being constructed correctly
+        for (let [key, value] of formData.entries()) {
+          console.log(`${key}: ${value}`);
+        }
+  
+        const response = await createUser(formData);
+  
+        if (response.success) {
+          navigate('/');
+        } else {
+          console.log(response); // Log the response to understand the error
+          setShowModal({
+            alert: true,
+            message: response.message,
+            type: 'error',
+          });
+        }
+      } catch (error) {
+        console.error('Error creating user:', error);
+        setShowModal({
+          alert: true,
+          message: 'An error occurred. Please try again later.',
+          type: 'error',
+        });
+      }
     }
-
-    navigate('/');
   };
+  
+  
 
   return (
     <>
@@ -87,31 +108,34 @@ function SignUp() {
             <FileUpload
               file={file}
               preview={preview}
-              handleFileChange={handleFileChange}
+              handleFileChange={(e) => {
+                setFile(e.target.files[0]);
+                setPreview(URL.createObjectURL(e.target.files[0]));
+              }}
             />
             <Input
               label="Username"
               type="text"
               value={username}
-              onChange={(e) => handleUsernameChange(e)}
+              onChange={(e) => setUsername(e.target.value)}
             />
             <Input
               label="Email"
               type="email"
               value={email}
-              onChange={(e) => handleEmailChange(e)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               label="Password"
               type="password"
               value={password}
-              onChange={(e) => handlePasswordChange(e)}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <Input
               label="Confirm Password"
               type="password"
               value={confirmPassword}
-              onChange={(e) => handleConfirmPasswordChange(e)}
+              onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <button type="submit">Sign Up</button>
             <span className="flex gap">
